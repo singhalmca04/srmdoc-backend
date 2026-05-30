@@ -238,7 +238,7 @@ const downloadPDF = async (req, res) => {
         );
         const filledTemplate = compiled({
             student_name: name,
-            student_address: address,
+            student_address: address.replace(/\n/g, '<br>'),
             reference_no: `SRMIST/NCR/A&O/2026/WLC-${reference_no}`,
             date: formatDate(),
             header_left_logo: leftLogo,
@@ -370,7 +370,7 @@ const downloadBulkPDF = async (req, res) => {
         for (const student of students) {
             const filledTemplate = compiledTemplate({
                 student_name: student.name,
-                student_address: student.address,
+                student_address: student.address.replace(/\n/g, '<br>'),
                 reference_no: `SRMIST/NCR/A&O/2026/WLC-${student.reference_no}`,
                 date: formatDate(),
                 header_left_logo: headerLeftLogo,
