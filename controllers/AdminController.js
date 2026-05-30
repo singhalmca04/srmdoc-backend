@@ -7,12 +7,12 @@ const Template = mongoose.model('Template');
 const xlsx = require('xlsx');
 const asyncLoop = require('node-async-loop');
 const PDFDocument = require('pdfkit');
-const puppeteer = await import('puppeteer');
 const { OAuth2Client } = require('google-auth-library');
 const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
 const Handlebars = require('handlebars');
+const pdfgen = require('../helpers/pdfgenerator');
 
 const client = new OAuth2Client('11697718537-dqjd46buavim9ufcdipmvpfe3ksvt5lk.apps.googleusercontent.com');
 
@@ -283,36 +283,39 @@ const downloadPDF = async (req, res) => {
         </html>
         `;
 
-        const browser = await puppeteer.launch({
-            headless: true,
-            args: [
-                '--no-sandbox',
-                '--disable-setuid-sandbox'
-            ]
+        // const browser = await puppeteer.launch({
+        //     headless: true,
+        //     args: [
+        //         '--no-sandbox',
+        //         '--disable-setuid-sandbox'
+        //     ]
+        // });
+
+        // const page = await browser.newPage();
+
+        // await page.setContent(
+        //     htmlDocument,
+        //     {
+        //         waitUntil: 'networkidle0'
+        //     }
+        // );
+
+        // const pdfBuffer = await page.pdf({
+        //     format: 'A4',
+        //     printBackground: true,
+        //     preferCSSPageSize: true,
+        //     margin: {
+        //         top: '0',
+        //         right: '0',
+        //         bottom: '0',
+        //         left: '0'
+        //     }
+        // });
+
+        // await browser.close();
+        const pdfBuffer = await pdfgen.generatePDF({
+            html: htmlDocument
         });
-
-        const page = await browser.newPage();
-
-        await page.setContent(
-            htmlDocument,
-            {
-                waitUntil: 'networkidle0'
-            }
-        );
-
-        const pdfBuffer = await page.pdf({
-            format: 'A4',
-            printBackground: true,
-            preferCSSPageSize: true,
-            margin: {
-                top: '0',
-                right: '0',
-                bottom: '0',
-                left: '0'
-            }
-        });
-
-        await browser.close();
 
         res.setHeader(
             'Content-Type',
