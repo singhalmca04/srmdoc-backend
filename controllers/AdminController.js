@@ -13,6 +13,7 @@ const fs = require('fs');
 const path = require('path');
 const Handlebars = require('handlebars');
 const pdfgen = require('../helpers/pdfgenerator');
+const archiver = require('archiver');
 
 const client = new OAuth2Client('11697718537-dqjd46buavim9ufcdipmvpfe3ksvt5lk.apps.googleusercontent.com');
 
@@ -184,8 +185,9 @@ const uploadStudentExcel = async (req, res) => {
 
         const students = data.map((row) => ({
             name: row.name || row.Name || row['Student Name'] || '',
-            address: row.address || row.Address || row['Student Address'] || ''
-        })).filter((item) => item.name || item.address);
+            address: row.address || row.Address || row['Student Address'] || '',
+            reference_no: row.reference_no || row.ReferenceNo || row['Reference No'] || ''
+        })).filter((item) => item.name || item.address || item.reference_no);
 
         res.json({ success: true, students });
     } catch (err) {
@@ -200,7 +202,6 @@ function formatDate(date = new Date()) {
         'May', 'June', 'July', 'August',
         'September', 'October', 'November', 'December'
     ];
-
     return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
 }
 
@@ -220,18 +221,7 @@ const downloadPDF = async (req, res) => {
             students = []
         } = req.body || {};
 
-        const studentData =
-            students.length > 0
-                ? students[0]
-                : {
-                    name,
-                    address
-                };
-
-        const template = await Template.findOne({
-            status: 'active'
-        }).lean();
-
+        const template = await Template.findOne({ status: 'active' }).lean();
         if (!template) {
             return res.status(404).json({
                 success: false,
@@ -249,8 +239,8 @@ const downloadPDF = async (req, res) => {
             template.html_content
         );
         const filledTemplate = compiled({
-            student_name: studentData.name,
-            student_address: studentData.address,
+            student_name: name,
+            student_address: address,
             reference_no: referenceNo,
             date: formatDate(),
             header_left_logo: leftLogo,
@@ -291,75 +281,7 @@ const downloadPDF = async (req, res) => {
         });
     }
 };
-// const downloadPDF = async (req, res) => {
-//     try {
-//         const { name, address, students = [], template: clientTemplate, showHtmlAsCode } = req.body || {};
-//         const studentData = students && students.length > 0
-//             ? { name: students[0].name || '', address: students[0].address || '' }
-//             : { name: name || '', address: address || '' };
 
-//         if (!studentData.name && !studentData.address) {
-//             return res.status(400).json({
-//                 success: false,
-//                 message: 'Provide student name and address or upload an Excel file with at least one row.'
-//             });
-//         }
-
-//         const foundTemplate = await Template.findOne({ status: 'active' }).lean();
-//         if (!foundTemplate && !clientTemplate) {
-//             return res.status(404).json({ success: false, message: 'No template available for PDF generation' });
-//         }
-//         const headerImage = getBase64Image('../uploads/srm-logo.jpeg');
-//         // const footerImage = getBase64Image('../uploads/footer.png');
-
-//         const templateHtml = clientTemplate || foundTemplate.html_content;
-//         const filledTemplate = templateHtml
-//             .replace(/{{\s*student_name\s*}}/gi, studentData.name)
-//             .replace(/{{\s*student_address\s*}}/gi, studentData.address)
-//             .replace(/{{\s*reference_no\s*}}/gi, `SRMIST/NCR/A&O/2026/WLC-${Math.floor(1000 + Math.random() * 9000)}`)
-//             .replace(/{{\s*header_left_logo\s*}}/gi, headerImage)
-//             // .replace(/{{\s*footer_image\s*}}/gi, footerImage)
-//             .replace(/{{\s*date\s*}}/gi, formatDate());
-
-//         if (showHtmlAsCode) {
-//             const doc = new PDFDocument({ size: 'A4', margin: 10 });
-//             const chunks = [];
-
-//             doc.on('data', (chunk) => chunks.push(chunk));
-//             doc.on('end', () => {
-//                 const pdfBuffer = Buffer.concat(chunks);
-//                 res.setHeader('Content-Type', 'application/pdf');
-//                 res.setHeader('Content-Disposition', 'attachment; filename="student-letter.pdf"');
-//                 res.send(pdfBuffer);
-//             });
-
-//             doc.font('Courier').fontSize(10).text(filledTemplate, { align: 'left', lineGap: 4 });
-//             doc.end();
-//         } else {
-//             const htmlDocument = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{color: #333; font-family: Arial, sans-serif; font-size: 12pt; line-height: 1.5; margin: 0; padding: 0;} .page{box-sizing: border-box; min-height: 297mm; padding: 25mm 20mm 35mm 20mm; page-break-after: always;} h1,h2,h3,h4,h5,h6{margin:0 0 10px;} p{margin:0 0 10px;} strong,b{font-weight:bold;} em,i{font-style:italic;} ul,ol{margin:0 0 10px 20px;} li{margin-bottom:5px;}</style></head><body>${filledTemplate}</body></html>`;
-//             const fs = require('fs');
-//             fs.writeFileSync('test.html', htmlDocument);
-//             console.log("HTML generated");
-//             const browser = await puppeteer.launch({
-//                 args: ['--no-sandbox', '--disable-setuid-sandbox'],
-//             });
-//             const page = await browser.newPage();
-//             await page.setContent(htmlDocument, { waitUntil: 'networkidle0' });
-//             const pdfBuffer = await page.pdf({
-//                 format: 'A4',
-//                 printBackground: true,
-//                 margin: { top: '2mm', bottom: '2mm', left: '2mm', right: '2mm' },
-//             });
-//             await browser.close();
-//             res.setHeader('Content-Type', 'application/pdf');
-//             res.setHeader('Content-Disposition', 'attachment; filename="student-letter.pdf"');
-//             res.send(pdfBuffer);
-//         }
-//     } catch (err) {
-//         console.log(err);
-//         res.status(500).json({ success: false, message: 'Could not generate PDF' });
-//     }
-// };
 const googleLogin = async (req, res) => {
     try {
         const { token } = req.body;
@@ -407,6 +329,109 @@ const googleLogin = async (req, res) => {
     }
 };
 
+const downloadBulkPDF = async (req, res) => {
+    try {
+        const { students = [] } = req.body;
+        if (!students.length) {
+            return res.status(400).json({
+                success: false,
+                message: 'No students found'
+            });
+        }
+        const template = await Template.findOne({ status: 'active' }).lean();
+        if (!template) {
+            return res.status(404).json({
+                success: false,
+                message: 'Template not found'
+            });
+        }
+
+        const headerLeftLogo = getBase64Image('../uploads/left-logo.png');
+        const headerRightLogo = getBase64Image('../uploads/srm-logo.png');
+        const footerPage1 = getBase64Image('../uploads/footer1.PNG');
+        const footerPage2 = getBase64Image('../uploads/footer2.PNG');
+        const compiledTemplate = Handlebars.compile(
+            template.html_content
+        );
+
+        res.setHeader('Content-Type', 'application/zip');
+        res.setHeader(
+            'Content-Disposition',
+            'attachment; filename=student-letters.zip'
+        );
+        const archive = archiver('zip', {
+            zlib: { level: 9 }
+        });
+
+        archive.on('error', (err) => {
+            throw err;
+        });
+
+        archive.pipe(res);
+
+        for (const student of students) {
+            const referenceNo =
+                student.reference_no ||
+                `SRMIST/NCR/A&O/2026/WLC-${Math.floor(
+                    1000 + Math.random() * 9000
+                )}`;
+
+            const filledTemplate = compiledTemplate({
+                student_name: student.name,
+                student_address: student.address,
+                reference_no: referenceNo,
+                date: formatDate(),
+                header_left_logo: headerLeftLogo,
+                header_right_logo: headerRightLogo,
+                footer_page1: footerPage1,
+                footer_page2: footerPage2,
+                signatory_name: 'Head, Admissions & Outreach',
+                designation: 'SRM IST, Delhi-NCR Campus, Ghaziabad'
+            });
+
+            const htmlDocument = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+
+                <style>
+                    ${template.css_content}
+                </style>
+            </head>
+            <body>
+                ${filledTemplate}
+            </body>
+            </html>
+            `;
+
+            const pdfBuffer =
+                await pdfgen.generatePDF({
+                    html: htmlDocument
+                });
+
+            const safeName =
+                (student.name || 'student')
+                    .replace(/[^\w\s-]/g, '')
+                    .replace(/\s+/g, '_');
+
+            archive.append(
+                pdfBuffer,
+                {
+                    name: `${referenceNo}_${safeName}.pdf`
+                }
+            );
+        }
+        await archive.finalize();
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to generate PDFs'
+        });
+    }
+};
+
 module.exports = {
     uploadPics,
     loginUser,
@@ -417,6 +442,7 @@ module.exports = {
     uploadStudentExcel,
     downloadPDF,
     googleLogin,
+    downloadBulkPDF,
     changePassword,
     sendMail
 };

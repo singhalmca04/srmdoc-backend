@@ -68,6 +68,9 @@ module.exports = (app) => {
     app.post('/downloadpdf', async (req, res) => {
         AdminController.downloadPDF(req, res);
     });
+    app.post('/downloadpdfbulk', async (req, res) => {
+        AdminController.downloadBulkPDF(req, res);
+    });
     app.get('/', async (req, res) => {
         res.status(200).json({ message: 'Admin route is working!' });
     });
