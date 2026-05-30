@@ -168,7 +168,7 @@ const getTemplate = async (req, res) => {
         return res.status(404).json({ success: false, message: 'No active template found' });
     } catch (err) {
         console.log(err);
-        res.status(500).json({ success: false, message: 'Unable to load template' });
+        res.status(500).json({ success: false, err, message: 'Unable to load template' });
     }
 }
 
