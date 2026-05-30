@@ -233,15 +233,13 @@ const downloadPDF = async (req, res) => {
         const rightLogo = getBase64Image('../uploads/srm-logo.png');
         const footerImage1 = getBase64Image('../uploads/footer1.PNG');
         const footerImage2 = getBase64Image('../uploads/footer2.PNG');
-        const referenceNo =
-            `SRMIST/NCR/A&O/2026/WLC-${reference_no}`;
         const compiled = Handlebars.compile(
             template.html_content
         );
         const filledTemplate = compiled({
             student_name: name,
             student_address: address,
-            reference_no: referenceNo,
+            reference_no: `SRMIST/NCR/A&O/2026/WLC-${reference_no}`,
             date: formatDate(),
             header_left_logo: leftLogo,
             header_right_logo: rightLogo,
@@ -370,16 +368,10 @@ const downloadBulkPDF = async (req, res) => {
         archive.pipe(res);
 
         for (const student of students) {
-            const referenceNo =
-                student.reference_no ||
-                `SRMIST/NCR/A&O/2026/WLC-${Math.floor(
-                    1000 + Math.random() * 9000
-                )}`;
-
             const filledTemplate = compiledTemplate({
                 student_name: student.name,
                 student_address: student.address,
-                reference_no: referenceNo,
+                reference_no: `SRMIST/NCR/A&O/2026/WLC-${student.reference_no}`,
                 date: formatDate(),
                 header_left_logo: headerLeftLogo,
                 header_right_logo: headerRightLogo,
@@ -418,7 +410,7 @@ const downloadBulkPDF = async (req, res) => {
             archive.append(
                 pdfBuffer,
                 {
-                    name: `${referenceNo}_${safeName}.pdf`
+                    name: `${student.reference_no}_${safeName}.pdf`
                 }
             );
         }
