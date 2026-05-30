@@ -216,6 +216,7 @@ const downloadPDF = async (req, res) => {
         const {
             name,
             address,
+            reference_no,
             students = []
         } = req.body || {};
 
@@ -238,13 +239,13 @@ const downloadPDF = async (req, res) => {
             });
         }
 
-        const leftLogo = getBase64Image('../uploads/left-logo.jpeg');
-        const rightLogo = getBase64Image('../uploads/srm-logo.jpeg');
+        const leftLogo = getBase64Image('../uploads/left-logo.png');
+        const rightLogo = getBase64Image('../uploads/srm-logo.png');
 
         const footerImage1 = getBase64Image('../uploads/footer1.PNG');
         const footerImage2 = getBase64Image('../uploads/footer2.PNG');
         const referenceNo =
-            `SRMIST/NCR/A&O/2026/WLC-${Math.floor(1000 + Math.random() * 9000)}`;
+            `SRMIST/NCR/A&O/2026/WLC-${reference_no}`;
 
         const compiled = Handlebars.compile(
             template.html_content
