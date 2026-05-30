@@ -241,16 +241,13 @@ const downloadPDF = async (req, res) => {
 
         const leftLogo = getBase64Image('../uploads/left-logo.png');
         const rightLogo = getBase64Image('../uploads/srm-logo.png');
-
         const footerImage1 = getBase64Image('../uploads/footer1.PNG');
         const footerImage2 = getBase64Image('../uploads/footer2.PNG');
         const referenceNo =
             `SRMIST/NCR/A&O/2026/WLC-${reference_no}`;
-
         const compiled = Handlebars.compile(
             template.html_content
         );
-
         const filledTemplate = compiled({
             student_name: studentData.name,
             student_address: studentData.address,
@@ -263,77 +260,31 @@ const downloadPDF = async (req, res) => {
             signatory_name: 'Head, Admissions & Outreach',
             designation: 'SRM IST, Delhi-NCR Campus, Ghaziabad'
         });
-
         const htmlDocument = `
         <!DOCTYPE html>
         <html>
         <head>
             <meta charset="utf-8">
-
             <style>
                 ${template.css_content}
             </style>
         </head>
-
         <body>
-
             ${filledTemplate}
-
         </body>
-
         </html>
         `;
-
-        // const browser = await puppeteer.launch({
-        //     headless: true,
-        //     args: [
-        //         '--no-sandbox',
-        //         '--disable-setuid-sandbox'
-        //     ]
-        // });
-
-        // const page = await browser.newPage();
-
-        // await page.setContent(
-        //     htmlDocument,
-        //     {
-        //         waitUntil: 'networkidle0'
-        //     }
-        // );
-
-        // const pdfBuffer = await page.pdf({
-        //     format: 'A4',
-        //     printBackground: true,
-        //     preferCSSPageSize: true,
-        //     margin: {
-        //         top: '0',
-        //         right: '0',
-        //         bottom: '0',
-        //         left: '0'
-        //     }
-        // });
-
-        // await browser.close();
         const pdfBuffer = await pdfgen.generatePDF({
             html: htmlDocument
         });
-
-        res.setHeader(
-            'Content-Type',
-            'application/pdf'
-        );
-
+        res.setHeader('Content-Type', 'application/pdf');
         res.setHeader(
             'Content-Disposition',
             'attachment; filename="welcome-letter.pdf"'
         );
-
         res.send(pdfBuffer);
-
     } catch (err) {
-
         console.log(err);
-
         res.status(500).json({
             success: false,
             message: 'Could not generate PDF'
