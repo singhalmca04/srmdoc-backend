@@ -246,6 +246,7 @@ const downloadPDF = async (req, res) => {
             header_right_logo: rightLogo,
             footer_page1: footerImage1,
             footer_page2: footerImage2,
+            signature_image: getBase64Image('../uploads/sign.jpeg'),
             signatory_name: 'Head, Admissions & Outreach',
             designation: 'SRM IST, Delhi-NCR Campus, Ghaziabad'
         });
