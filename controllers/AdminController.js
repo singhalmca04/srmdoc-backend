@@ -228,6 +228,7 @@ const downloadPDF = async (req, res) => {
                 message: 'Template not found'
             });
         }
+        const referenceNumber = reference_no.length == 1 ? `000${reference_no}` : reference_no.length == 2 ? `00${reference_no}` : reference_no.length == 3 ? `0${reference_no}` : reference_no;
 
         const leftLogo = getBase64Image('../uploads/left-logo.png');
         const rightLogo = getBase64Image('../uploads/srm-logo.png');
@@ -239,7 +240,7 @@ const downloadPDF = async (req, res) => {
         const filledTemplate = compiled({
             student_name: name,
             student_address: address.replace(/\n/g, '<br>'),
-            reference_no: `SRMIST/NCR/A&O/2026/WLC-${reference_no}`,
+            reference_no: `SRMIST/NCR/A&O/2026/WLC-${referenceNumber}`,
             date: formatDate(),
             header_left_logo: leftLogo,
             header_right_logo: rightLogo,
@@ -368,10 +369,11 @@ const downloadBulkPDF = async (req, res) => {
         archive.pipe(res);
 
         for (const student of students) {
+            let referenceNumber = student.reference_no.length == 1 ? `000${student.reference_no}` : student.reference_no.length == 2 ? `00${student.reference_no}` : student.reference_no.length == 3 ? `0${student.reference_no}` : student.reference_no;
             const filledTemplate = compiledTemplate({
                 student_name: student.name,
                 student_address: student.address.replace(/\n/g, '<br>'),
-                reference_no: `SRMIST/NCR/A&O/2026/WLC-${student.reference_no}`,
+                reference_no: `SRMIST/NCR/A&O/2026/WLC-${referenceNumber}`,
                 date: formatDate(),
                 header_left_logo: headerLeftLogo,
                 header_right_logo: headerRightLogo,
@@ -409,9 +411,7 @@ const downloadBulkPDF = async (req, res) => {
 
             archive.append(
                 pdfBuffer,
-                {
-                    name: `${student.reference_no}_${safeName}.pdf`
-                }
+                { name: `${referenceNumber}_${safeName}.pdf` }
             );
         }
         await archive.finalize();
