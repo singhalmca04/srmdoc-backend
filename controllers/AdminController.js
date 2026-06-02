@@ -217,7 +217,6 @@ const downloadPDF = async (req, res) => {
         const {
             name,
             address,
-            reference_no,
             students = []
         } = req.body || {};
 
@@ -228,7 +227,9 @@ const downloadPDF = async (req, res) => {
                 message: 'Template not found'
             });
         }
-        const referenceNumber = String( reference_no || '').padStart(4, '0');
+        const referenceCount = await Student.countDocuments();
+        const reference_no = referenceCount + 1;
+        const referenceNumber = String(reference_no || '').padStart(4, '0');
 
         const leftLogo = getBase64Image('../uploads/left-logo.png');
         const rightLogo = getBase64Image('../uploads/srm-logo.png');
@@ -272,6 +273,11 @@ const downloadPDF = async (req, res) => {
             'Content-Disposition',
             'attachment; filename="welcome-letter.pdf"'
         );
+        await Student.create({
+            name,
+            address,
+            referenceNo: reference_no
+        });
         res.send(pdfBuffer);
     } catch (err) {
         console.log(err);
@@ -285,29 +291,15 @@ const downloadPDF = async (req, res) => {
 const googleLogin = async (req, res) => {
     try {
         const { token } = req.body;
-
-        // Verify token with Google
         const ticket = await client.verifyIdToken({
             idToken: token,
             audience: process.env.GOOGLE_CLIENT_ID
         });
-        console.log(token, 'token');
         const payload = ticket.getPayload();
-
         const { sub, email, name, picture } = payload;
-
-        // Check if user exists
         let user = await User.findOne({ email });
-
         if (!user) {
-            user = new User({
-                name,
-                email,
-                googleId: sub,
-                image: picture
-            });
-
-            await user.save();
+            return res.status(403).json({ success: false, message: 'Access denied' });
         }
 
         // Generate JWT iejb ibvn ehid qhiu
@@ -317,7 +309,8 @@ const googleLogin = async (req, res) => {
             { expiresIn: "1h" }
         );
 
-        res.json({
+        res.status(200).json({
+            success: true,
             message: "Login successful",
             token: appToken,
             user
@@ -370,9 +363,9 @@ const downloadBulkPDF = async (req, res) => {
         archive.pipe(res);
 
         for (const student of students) {
-            const referenceNumber = String(
-                student.reference_no || ''
-            ).padStart(4, '0');
+            const referenceCount = await Student.countDocuments();
+            const reference_no = referenceCount + 1;
+            const referenceNumber = String(reference_no).padStart(4, '0');
             const filledTemplate = compiledTemplate({
                 student_name: student.name,
                 student_address: student.address.replace(/\n/g, '<br>'),
@@ -412,7 +405,7 @@ const downloadBulkPDF = async (req, res) => {
                 (student.name || 'student')
                     .replace(/[^\w\s-]/g, '')
                     .replace(/\s+/g, '_');
-
+            await Student.create({ name: student.name, address: student.address,  referenceNo: reference_no });
             archive.append(
                 pdfBuffer,
                 { name: `${referenceNumber}_${safeName}.pdf` }

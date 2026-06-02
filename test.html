@@ -1,331 +1,160 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset='UTF-8'>
-    <style>
-        @page {
-            size: A4;
-            margin: 0;
-        }
+<div class="page">
 
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            color: #333;
-        }
+    <div class="border-box">
 
-        .page {
-            width: 210mm;
-            height: 297mm;
-            position: relative;
-            overflow: hidden;
-            box-sizing: border-box;
-            border: 8px solid #102c83;
-        }
+        <div class="header-container">
+            <div class="header-left">
+                <img src="{{header_left_logo}}" class="left-logo" />
+            </div>
 
-        .border-box {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            box-sizing: border-box;
-        }
+            <div class="header-right">
+                <img src="{{header_right_logo}}" class="right-logo" />
+            </div>
+        </div>
 
-        .page-break {
-            page-break-after: always;
-        }
+        <div class="content page1-content">
 
-        .header-container {
-            position: absolute;
-
-            top: 4px;
-            left: 10px;
-            right: 10px;
-
-            height: 100px;
-
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-
-            box-sizing: border-box;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-        }
-
-        .left-logo {
-            width: 260px;
-            height: auto;
-            object-fit: contain;
-        }
-
-        .right-logo {
-            width: 220px;
-            height: auto;
-            object-fit: contain;
-        }
-
-        .header-img {
-            width: 100%;
-            height: 100%;
-            display: block;
-            object-fit: fill;
-        }
-
-        .footer-container {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 65px;
-            border-top: 5px solid #e0aa3d;
-        }
-
-        .footer-img {
-            width: 100%;
-            height: 65px;
-            object-fit: cover;
-        }
-
-        .page1-content {
-            position: absolute;
-            top: 120px;
-            left: 30px;
-            right: 30px;
-            bottom: 80px;
-            overflow: hidden;
-        }
-
-        .page2-content {
-            position: absolute;
-            top: 30px;
-            left: 30px;
-            right: 30px;
-            bottom: 80px;
-            overflow: hidden;
-        }
-
-        .top-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            margin-top: 10px;
-            font-size: 14px;
-        }
-
-        .address-block {
-            margin-top: 50px;
-            margin-bottom: 20px;
-            line-height: 1.7;
-        }
-
-        .subject {
-            color: #102c83;
-            font-size: 15.33px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-
-        h3 {
-            color: #102c83;
-            margin-top: 20px;
-            margin-bottom: 10px;
-            font-size: 16.66px;
-        }
-
-        p {
-            font-size: 15.33px;
-            line-height: 1.5;
-            text-align: justify;
-            margin-bottom: 12px;
-        }
-
-        .signature-section {
-            margin-top: 5px;
-        }
-
-        .signature-section p {
-            margin-bottom: 5px;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="page">
-
-        <div class="border-box">
-
-            <div class="header-container">
-                <div class="header-left">
-                    <img src="{{header_left_logo}}" class="left-logo" />
+            <div class="top-row">
+                <div>
+                    <strong>Ref. No.:</strong>
+                    {{reference_no}}
                 </div>
 
-                <div class="header-right">
-                    <img src="{{header_right_logo}}" class="right-logo" />
+                <div>
+                    <strong>Date:</strong>
+                    {{date}}
                 </div>
             </div>
 
-            <div class="content page1-content">
-
-                <div class="top-row">
-                    <div>
-                        <strong>Ref. No.:</strong>
-                        {{reference_no}}
-                    </div>
-
-                    <div>
-                        <strong>Date:</strong>
-                        {{date}}
-                    </div>
-                </div>
-
-                <div class="address-block">
-                    <p>To,<br />
-                        <strong>{{student_name}}</strong><br />
-                        {{student_address}}
-                    </p>
-                </div>
-
-                <div class="subject">
-                    Subject: Welcome to SRM IST Delhi-NCR Campus -
-                    A Message from the Office of Admissions & Outreach
-                </div>
-
-                <p><strong>Dear Student,</strong></p>
-
-                <p>
-                    On behalf of <strong>SRM Institute of Science and Technology,
-                        Delhi-NCR Campus, Ghaziabad,</strong> it is my distinct pleasure
-                    to extend to you a very warm welcome to our institutional family. Your admission
-                    marks the beginning of an exciting and transformative chapter - one that will shape not only your
-                    academic and professional journey, but also the values, vision, and leadership you carry into the
-                    world.
+            <div class="address-block">
+                <p>To,<br />
+                    <strong>{{student_name}}</strong><br />
+                    {{{student_address}}}
                 </p>
-
-                <p>
-                    Your decision to join SRM IST Delhi-NCR Campus reflects
-                    both ambition and discernment. As a <strong>NAAC A++ accredited</strong>
-                    and <strong>UGC Category-I</strong> Deemed-to-be University, our campus
-                    is recognised for its commitment to academic excellence,
-                    research-driven learning, industry-aligned curricula,
-                    and the holistic development of every student.You are now part of a diverse community of more than
-                    5,000
-                    students and over 270 distinguished faculty members, drawn from across India and abroad.
-                </p>
-
-                <h3>Academic Excellence & Learning Environment</h3>
-
-                <p>
-                    Our academic programmes are designed to combine
-                    conceptual depth with practical relevance.
-                    State-of-the-art laboratories, libraries,
-                    smart classrooms and research facilities
-                    provide the foundation on which you will build your expertise. A robust system of
-                    mentorship, continuous assessment, and outcome-based education ensures that each student is
-                    challenged, supported, and guided towards their fullest potential.
-                </p>
-
-                <h3>Industry Linkages, Internships & Placements</h3>
-
-                <p>
-                    SRM IST Delhl-NCR Campus enjoys strong partnerships with leading Indlan and global organisations
-                    across technology, engineering, management, pharmacy, and allied disciplines. Through structured
-                    internships, industry-led projects, certification programmes, and an active Training & Placement
-                    Cell,
-                    students are systematically prepared for rewarding careers and entrepreneurial pursuits.
-                </p>
-
             </div>
 
-            <div class="footer-container">
-                <img src="{{footer_page1}}" class="footer-img" />
+            <div class="subject">
+                Subject: Welcome to SRM IST Delhi-NCR Campus
             </div>
 
+            <p><strong>Dear Student,</strong></p>
+
+            <p>
+                On behalf of <strong>SRM Institute of Science and Technology,
+                    Delhi-NCR Campus, Ghaziabad,</strong> it is my distinct pleasure
+                to extend to you a very warm welcome to our institutional family. Your admission
+                marks the beginning of an exciting and transformative chapter - one that will shape not only your
+                academic and professional journey, but also the values, vision, and leadership you carry into the
+                world.
+            </p>
+
+            <p>
+                Your decision to join SRM IST Delhi-NCR Campus reflects
+                both ambition and discernment. As a <strong>NAAC A++ accredited</strong>
+                and <strong>UGC Category-I</strong> Deemed-to-be University, our campus
+                is recognised for its commitment to academic excellence,
+                research-driven learning, industry-aligned curricula,
+                and the holistic development of every student.You are now part of a diverse community of more than 5,000
+                students and over 270 distinguished faculty members, drawn from across India and abroad.
+            </p>
+
+            <h3>Academic Excellence & Learning Environment</h3>
+
+            <p>
+                Our academic programmes are designed to combine
+                conceptual depth with practical relevance.
+                State-of-the-art laboratories, libraries,
+                smart classrooms and research facilities
+                provide the foundation on which you will build your expertise. A robust system of
+                mentorship, continuous assessment, and outcome-based education ensures that each student is
+                challenged, supported, and guided towards their fullest potential.
+            </p>
+
+            <h3>Industry Linkages, Internships & Placements</h3>
+
+            <p>
+                SRM IST Delhl-NCR Campus enjoys strong partnerships with leading Indlan and global organisations
+                across technology, engineering, management, pharmacy, and allied disciplines. Through structured
+                internships, industry-led projects, certification programmes, and an active Training & Placement Cell,
+                students are systematically prepared for rewarding careers and entrepreneurial pursuits.
+            </p>
+
+        </div>
+
+        <div class="footer-container">
+            <img src="{{footer_page1}}" class="footer-img" />
         </div>
 
     </div>
 
-    <div class="page-break"></div>
+</div>
 
-    <div class="page">
+<div class="page-break"></div>
 
-        <div class="border-box">
+<div class="page">
 
-            <div class="content page2-content">
+    <div class="border-box">
 
-                <h3>Holistic Development & Campus Life</h3>
+        <div class="content page2-content">
 
-                <p>
-                    Beyond the classroom, the campus offers a vibrant ecosystem of student clubs, technical societies,
-                    cultural forums, sports facilities, and leadership opportunities. We firmly believe that excellence
-                    in
-                    academics must be complemented by character, creativity, discipline, and a strong sense of social
-                    responsibility-values that we actively nurture throughout your years with us.
+            <h3 style="margin-top:0">Holistic Development & Campus Life</h3>
+
+            <p>
+                Beyond the classroom, the campus offers a vibrant ecosystem of student clubs, technical societies,
+                cultural forums, sports facilities, and leadership opportunities. We firmly believe that excellence in
+                academics must be complemented by character, creativity, discipline, and a strong sense of social
+                responsibility-values that we actively nurture throughout your years with us.
+            </p>
+
+            <h3>Student Support & Onboarding</h3>
+
+            <p>
+                As you prepare to commence your journey at SRM IST Delhi-NCR Campus, the Office of Admissions &
+                Outreach stands as your first point of support. Our team will assist you with documentation,
+                registration, fee formalities, hostel allocation, orientation programmes, and any guidance you may
+                require during your transition to campus life. Please feel free to reach out to us - our commitment is
+                to ensure a smooth, transparent, and welcoming onboarding experience for every student and parent
+            </p>
+
+            <h3>Next Steps</h3>
+
+            <p>
+                You are kindly requested to complete all pending admission formalities within the stipulated
+                timelines, regularly check official communications from the campus, and attend the <strong>Orientation
+                    Programme</strong> on the scheduled date. Detailed instructions regarding reporting, hostel
+                check-in,
+                document verification, and the academic calendar will be shared with you in due course through
+                official channels
+            </p>
+
+            <p>
+                I encourage you to step into this new phase with curiosity, openness, and confidence. The
+                opportunities ahead - academic, co-curricular, cultural, and professional - are vast, and the years you
+                spend with us will, I am certain, be among the most formative and memorable of your life
+            </p>
+            <p>On behalf of the Office of Admissions & Outreach, and the entire SRM IST Delhi-NCR Campus family, I
+                extend my heartiest welcome and warmest wishes for a fulfilling, successful, and inspiring academic
+                joumey ahead.</p>
+            <div class="signature-section">
+
+                <p>With warm regards,</p>
+
+
+
+                <p style="color:#163b8f">
+                    <img src="{{signature_image}}" alt="Signature" style="height: 50px; width: 150px;" /><br />
+                    <strong>{{signatory_name}}</strong>
+                    <br />{{designation}}
                 </p>
 
-                <h3>Student Support & Onboarding</h3>
-
-                <p>
-                    As you prepare to commence your journey at SRM IST Delhi-NCR Campus, the Office of Admissions &
-                    Outreach stands as your first point of support. Our team will assist you with documentation,
-                    registration, fee formalities, hostel allocation, orientation programmes, and any guidance you may
-                    require during your transition to campus life. Please feel free to reach out to us - our commitment
-                    is
-                    to ensure a smooth, transparent, and welcoming onboarding experience for every student and parent
-                </p>
-
-                <h3>Next Steps</h3>
-
-                <p>
-                    You are kindly requested to complete all pending admission formalities within the stipulated
-                    timelines, regularly check official communications from the campus, and attend the
-                    <strong>Orientation
-                        Programme</strong> on the scheduled date. Detailed instructions regarding reporting, hostel
-                    check-in,
-                    document verification, and the academic calendar will be shared with you in due course through
-                    official channels
-                </p>
-
-                <p>
-                    I encourage you to step into this new phase with curiosity, openness, and confidence. The
-                    opportunities ahead - academic, co-curricular, cultural, and professional - are vast, and the years
-                    you
-                    spend with us will, I am certain, be among the most formative and memorable of your life
-                </p>
-                <p>On behalf of the Office of Admissions & Outreach, and the entire SRM IST Delhi-NCR Campus family, I
-                    extend my heartiest welcome and warmest wishes for a fulfilling, successful, and inspiring academic
-                    joumey ahead.</p>
-                <div class="signature-section">
-
-                    <p>With warm regards,</p>
-
-                    <br><br>
-
-                    <p style="color:#163b8f">
-                        Sd/- &nbsp;&nbsp;&nbsp;<img src="{{signature_image}}" alt="Signature" style="height: 50px; width: 150px;" /><br />
-                        <strong>{{signatory_name}}</strong>
-                        <br />{{designation}}
-                    </p>
-
-                </div>
-
-            </div>
-
-            <div class="footer-container">
-                <img src="uploads/footer2.PNG" class="footer-img" />
             </div>
 
         </div>
 
-    </div>
-</body>
+        <div class="footer-container">
+            <img src="{{footer_page2}}" class="footer-img" />
+        </div>
 
-</html>
+    </div>
+
+</div>
