@@ -201,7 +201,8 @@ function formatDate(date = new Date()) {
         'May', 'June', 'July', 'August',
         'September', 'October', 'November', 'December'
     ];
-    return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${day} ${months[date.getMonth()]} ${date.getFullYear()}`;
 }
 
 function getBase64Image(filePath) {
