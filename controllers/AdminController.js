@@ -270,8 +270,15 @@ const downloadPDF = async (req, res) => {
         });
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader(
+            'Access-Control-Expose-Headers',
+            'Content-Disposition'
+        );
+        const safeName = (name || 'student')
+            .replace(/[^\w\s-]/g, '')
+            .replace(/\s+/g, '_');
+        res.setHeader(
             'Content-Disposition',
-            'attachment; filename="welcome-letter.pdf"'
+            `attachment; filename="${referenceNumber}_${safeName}.pdf"`
         );
         await Student.create({
             name,
@@ -405,7 +412,7 @@ const downloadBulkPDF = async (req, res) => {
                 (student.name || 'student')
                     .replace(/[^\w\s-]/g, '')
                     .replace(/\s+/g, '_');
-            await Student.create({ name: student.name, address: student.address,  referenceNo: reference_no });
+            await Student.create({ name: student.name, address: student.address, referenceNo: reference_no });
             archive.append(
                 pdfBuffer,
                 { name: `${referenceNumber}_${safeName}.pdf` }
