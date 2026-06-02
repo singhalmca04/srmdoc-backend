@@ -185,9 +185,8 @@ const uploadStudentExcel = async (req, res) => {
 
         const students = data.map((row) => ({
             name: row.name || row.Name || row['Student Name'] || '',
-            address: row.address || row.Address || row['Student Address'] || '',
-            reference_no: row.reference_no || row.ReferenceNo || row['Reference No'] || ''
-        })).filter((item) => item.name || item.address || item.reference_no);
+            address: row.address || row.Address || row['Student Address'] || ''
+        })).filter((item) => item.name || item.address);
 
         res.json({ success: true, students });
     } catch (err) {
